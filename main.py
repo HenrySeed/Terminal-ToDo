@@ -1,55 +1,17 @@
 import curses
 import curses.textpad
 import os
-
-def save_to_file(todoList, doneList):
-    f = open("todoSave", 'w+')
-    # wipe the old save file
-    f.truncate(0)
-
-    todoString = ",".join(todoList)
-    if todoString == ",": todoString = ""
-
-    doneString = ",".join(doneList)
-    if doneString == ",": doneString = ""
-
-    output = todoString + ";" + doneString
-    f.write(output)
-
-
-def loadFromFile():
-    try:
-        line = open("todoSave", 'r').read()
-        todoList = line.split(';')[0].split(',')
-        doneList = line.split(';')[1].split(',')
-
-        todoListFiltered = []
-        doneListFiltered = []
-
-        for item in todoList:
-            if "[ ]" in item:
-                todoListFiltered.append(item)
-
-        for item in doneList:
-            if "[ ]" in item:
-                doneListFiltered.append(item)
-
-        return todoListFiltered, doneListFiltered
-    except:
-        return [], []
-
-
-def setupColour(win):
-    # Uses default terminal colours
-    curses.use_default_colors()
-    curses.init_pair(0, 0, -1)
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_RED)
+from saveLoadUtils import *
+from cursesUtils import setupColour
+from logoUtils import printLogo
 
 def tb_backSpace(text, index):
     return text[:index-1] + text[index:]
 
+
 def tb_insert(text, key, cursor):
     return text[:cursor] + key + text[cursor:]
+
 
 def toggle_todo(index, todoList, doneList):
     item = (todoList + doneList)[index]
@@ -73,17 +35,17 @@ def remove_todo(index, todoList, doneList):
 
 def print_new_todo(win, todo, tbCursor, active=False):
     todoString = todo
-    win.addstr(0,0, "New TODO: " + todoString)
+    win.addstr(8,0, "New TODO: " + todoString)
     if active:
-        win.addstr(0,10 + tbCursor, "█")
+        win.addstr(8,10 + tbCursor, "█")
 
 
 
 def print_todo(win, listTodo, doneList, cursorLine):
     listX = 3
-    listY = 2
+    listY = 10
 
-    win.addstr(listY, 0, "============  TODO  ============")
+    win.addstr(listY, 0, " TODO ------------------")
     # the y screen position of the start of the list
 
     listY += 1
@@ -96,7 +58,7 @@ def print_todo(win, listTodo, doneList, cursorLine):
             win.addstr(listY+count, listX, todo)
         count += 1
 
-    win.addstr(listY+count+1, 0, "============  DONE  ============")
+    win.addstr(listY+count+1, 0, " DONE ------------------")
     # the y screen position of the start of the list
     listY += 2
     for todo in doneList:
@@ -106,6 +68,10 @@ def print_todo(win, listTodo, doneList, cursorLine):
             win.addstr(listY+count, listX, todo.replace('[ ]', "[x]"))
         count += 1
 
+def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo):
+    printLogo(win, 0,0)
+    print_todo(win, todoList, doneList, cursorPos)
+    print_new_todo(win, newTodo, tbCursor, textField)
 
 
 
@@ -127,10 +93,7 @@ def main(win):
         cursorPos = -1
         textField = True
 
-    # Draw the todo-list
-    print_todo(win, todoList, doneList, cursorPos)
-    print_new_todo(win, newTodo, tbCursor, textField)
-
+    print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo)
 
     key = ""
     while 1:  
@@ -202,10 +165,8 @@ def main(win):
             # win.addstr(34, 0, ' ' * 100)
             # win.addstr(34, 0, "Key: " + key + "cursorPos: " + str(cursorPos))
 
-            print_new_todo(win, newTodo, tbCursor, textField)
+            print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo)
 
-            # Draw the todo-list
-            print_todo(win, todoList, doneList, cursorPos)
 
             save_to_file(todoList, doneList)
 
@@ -215,8 +176,8 @@ def main(win):
         except Exception as e:
             # No input   
             # if str(e) != 'no input':
-                # win.addstr(35, 0, ' ' * 100)
-                # win.addstr(35, 0, "ERROR: {0}".format(e))
+            #     win.addstr(35, 0, ' ' * 100)
+            #     win.addstr(35, 0, "ERROR: {0}".format(e))
             pass  
 
         
