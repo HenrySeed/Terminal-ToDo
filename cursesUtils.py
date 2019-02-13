@@ -1,7 +1,9 @@
 import curses
 
-
 def setupColour(win):
+    """
+        Sets colors to be used in curses
+    """
     # Uses default terminal colours
     curses.use_default_colors()
     curses.init_pair(0, 0, -1)

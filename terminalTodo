@@ -1,0 +1,55 @@
+#!/bin/bash
+
+
+noLogo=0
+noDate=False
+customLogo=""
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+
+while (( "$#" )); do
+  case "$1" in
+    -nl|--noLogo)
+      customLogo=" "
+      shift 1
+      ;;
+    -nd|--noDate)
+      noDate=True
+      shift 1
+      ;;
+    --customLogo)
+      customLogo=$2
+      shift 2
+      ;;
+    -h|--help)
+      echo " _____            _"
+      echo "|_   _|__      __| | ___"
+      echo "  | |/ _ \ __ / _\` |/ _ \\"
+      echo "  | | (_) |__| (_| | (_) |"
+      echo "  |_|\\___/    \\__,_|\\___/"
+      echo ""
+      echo "Terminal To-Do:" 
+      echo "A terminal based to-do list." 
+      echo ""
+      echo "Arguments:" 
+      echo "  --noLogo (-nl) : Hides the Logo" 
+      echo "  --noDate (-nd) : Hides the date" 
+      echo "  --customLogo   : A custom logo to be used instead"
+      echo "  --help (-h)    : This help menu"
+      
+      >&2
+      exit 1
+      ;;
+    -*|--*=|*) # unsupported flags
+      echo "Error: Unsupported argument $1" >&2
+      exit 1
+      ;;
+  esac
+done
+
+# set positional arguments in their proper place
+# echo "Logo: "  $customLogo
+# echo "No Date: "  $noDate
+
+python3 $DIR/main.py "$customLogo" $noDate
