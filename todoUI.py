@@ -1,8 +1,12 @@
 from logoUtils import print_logo
 import os
+from cursesUtils import *
 
 
 def print_todo_line(win, y, x, inputLineStr, checked, done):
+    """
+        Prints a given todo item
+    """
     rows, columns = os.popen('stty size', 'r').read().split()
 
     # check for a long inputLineStr
@@ -34,7 +38,7 @@ def print_todo_line(win, y, x, inputLineStr, checked, done):
     for line in lines:
         if count == 0:
             if checked:
-                win.addstr(y+count, x, "[█] " + line)
+                win.addstr(y+count, x, "[ ] " + line)
             elif done:
                 win.addstr(y+count, x, "[x] " + line)
             else:
@@ -54,8 +58,8 @@ def print_new_todo_input(win, todo, tbCursor, active, linesUsed):
     """
     todoString = todo
     win.addstr(linesUsed+1,0, "New TODO: " + todoString)
-    if active:
-        win.addstr(linesUsed+1,10 + tbCursor, "█")
+    # if active:
+    #     win.addstr(linesUsed+1,10 + tbCursor, "█")
 
 
 def print_todo(win, listTodo, doneList, cursorLine, linesUsed):
@@ -83,10 +87,29 @@ def print_todo(win, listTodo, doneList, cursorLine, linesUsed):
         itemCount += 1
 
 
+
+
+def updateCursor(win, cursorPos, tbCursor, todoLength, start):
+    """
+        janky cursor move system. Needs to be updated to use win.move(y, x)
+    """
+    # if its in the text field
+    if cursorPos == -1:
+        win.addstr(start+1, 10+tbCursor, "")
+    elif cursorPos > todoLength-1:
+        win.addstr(cursorPos+start+6, 4, "")
+    else:
+        win.addstr(cursorPos+start+4, 4, "")
+
+
+
 def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate):
     """
         Prints all three UI elements to the curses window, logo, new todo Input and the todo list
     """
     linesUsed = print_logo(win, 0,0, logo, noDate)
-    print_todo(win, todoList, doneList, cursorPos, linesUsed)
     print_new_todo_input(win, newTodo, tbCursor, textField, linesUsed)
+    print_todo(win, todoList, doneList, cursorPos, linesUsed)
+
+    updateCursor(win, cursorPos, tbCursor, len(todoList), linesUsed)
+

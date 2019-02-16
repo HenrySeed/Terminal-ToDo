@@ -1,5 +1,20 @@
 import curses
 
+
+
+CURSOR_X = 0
+CURSOR_Y = 0
+
+
+def cursorMove(y, x):
+    CURSOR_X = x
+    CURSOR_Y = y
+
+
+def get_x_y():
+    return [CURSOR_X, CURSOR_Y]
+
+
 def setupColour(win):
     """
         Sets colors to be used in curses

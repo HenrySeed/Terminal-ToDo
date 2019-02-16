@@ -2,7 +2,7 @@ import curses
 import curses.textpad
 import os
 from saveLoadUtils import *
-from cursesUtils import setupColour
+from cursesUtils import *
 import sys
 from todoUI import print_UI
 
@@ -16,6 +16,7 @@ from todoUI import print_UI
 #  +---------------------------------------------------+
 
 
+
 def catch_args():
     """
         Catches given arguments to set a custom logo and toggle the date.
@@ -27,8 +28,6 @@ def catch_args():
         return [customLogo, noDate]
     except:
         return ["", "False"]
-
-    
 
 
 def tb_backSpace(text, index):
@@ -71,13 +70,11 @@ def remove_todo(index, todoList, doneList):
         return [todoList, doneList]
 
 
-
 def main(win):
     """
         The main function. sets up the curses menu, variables and holds the main loop for key catches. Also handles most of the updating of state and text input etc.
     """
-    # sets sursor to invisible
-    curses.curs_set(0)
+    curses.curs_set(1)
     win.nodelay(True)
     win.clear() 
     setupColour(win)
@@ -159,7 +156,7 @@ def main(win):
                 elif key == "\n":
                     todoList, doneList = toggle_todo(cursorPos, todoList, doneList)
                 
-
+                
             # make sure we havent left the array
             if cursorPos < -1: 
                 cursorPos = -1
@@ -177,7 +174,6 @@ def main(win):
             # win.addstr(34, 0, "Key: " + key + "cursorPos: " + str(cursorPos))
 
             print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate)
-
             save_to_file(todoList, doneList)
 
             # win.addstr(34, 0, ' ' * 100)
