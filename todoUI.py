@@ -70,30 +70,30 @@ def print_todo_line(win, y, x, inputLineStr, checked, done):
 
     lines = get_split_todo(inputLineStr)
 
-   # win.addstr(25, 0, " " * 400)
-   # win.addstr(25, 0, str(lines))
+    # win.addstr(25, 0, " " * 400)
+    # win.addstr(25, 0, str(lines))
 
-   if done:
-       text_color = curses.color_pair(2)
-       tick_color = curses.color_pair(2)
-       tick = "[x]"
-   else:
-       text_color = curses.color_pair(3)
-       tick_color = curses.color_pair(3)
-       tick = "[ ]"
+    if done:
+        text_color = curses.color_pair(2)
+        tick_color = curses.color_pair(2)
+        tick = "[x]"
+    else:
+        text_color = curses.color_pair(3)
+        tick_color = curses.color_pair(3)
+        tick = "[ ]"
 
 
-   count = 0
-   for line in lines:
-       if count == 0:
-           win.addstr(y+count, x, tick, tick_color)
+    count = 0
+    for line in lines:
+        if count == 0:
+            win.addstr(y+count, x, tick, tick_color)
 
-       win.addstr(y+count, x+5, line, text_color)
+        win.addstr(y+count, x+5, line, text_color)
 
-       count += 1
+        count += 1
 
-   # re return the number of lines so we can move the next one down
-   return count
+    # re return the number of lines so we can move the next one down
+    return count
 
 
 def print_new_todo_input(win, todo, tbCursor, active, linesUsed):
