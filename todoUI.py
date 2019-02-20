@@ -69,16 +69,24 @@ def print_todo_line(win, y, x, inputLineStr, checked, done):
     """
 
     lines = get_split_todo(inputLineStr)
+
+    # win.addstr(25, 0, " " * 400)
+    # win.addstr(25, 0, str(lines))
     
     count = 0
     for line in lines:
-        if count == 0:
-            if done:
-                win.addstr(y+count, x, "[x] " + line)
+        if done:
+            if count == 0:
+                win.addstr(y+count, x, "[x] " + line, curses.color_pair(2))
             else:
-                win.addstr(y+count, x, "[ ] " + line)
+                win.addstr(y+count, x, "    " + line, curses.color_pair(2))
         else:
-            win.addstr(y+count, x, "    " + line)
+            if count == 0:
+                win.addstr(y+count, x, "[ ] " + line, curses.color_pair(3))
+            else:
+                win.addstr(y+count, x, "    " + line, curses.color_pair(3))
+                
+        
 
         count += 1
 

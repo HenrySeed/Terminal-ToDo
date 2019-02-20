@@ -5,6 +5,7 @@ from saveLoadUtils import *
 from cursesUtils import *
 import sys
 from todoUI import print_UI
+from time import sleep
 
 
 #  Author: Henry Seed
@@ -95,6 +96,8 @@ def main(win):
 
     print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate)
 
+    lastRows, lastCols = os.popen('stty size', 'r').read().split()
+
     key = ""
     while 1:  
         try:
@@ -180,10 +183,18 @@ def main(win):
             # win.addstr(34, 0, str(todoList) +"    " +  str(doneList))
 
         except Exception as e:
-            # No input   
-            if str(e) != 'no input':
-                win.addstr(35, 0, ' ' * 100)
-                win.addstr(35, 0, "ERROR: {0}".format(e))
+            rows, cols = os.popen('stty size', 'r').read().split()
+            if rows != lastRows or cols != lastCols:
+                win.clear()
+                print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate)
+
+
+            # No input 
+            sleep(0.01)  
+            
+            # if str(e) != 'no input':
+            #     win.addstr(35, 0, ' ' * 100)
+            #     win.addstr(35, 0, "ERROR: {0}".format(e))
             pass  
 
         
