@@ -181,9 +181,9 @@ def main(win):
 
         except Exception as e:
             # No input   
-            # if str(e) != 'no input':
-            #     win.addstr(35, 0, ' ' * 100)
-            #     win.addstr(35, 0, "ERROR: {0}".format(e))
+            if str(e) != 'no input':
+                win.addstr(35, 0, ' ' * 100)
+                win.addstr(35, 0, "ERROR: {0}".format(e))
             pass  
 
         

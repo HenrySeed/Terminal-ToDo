@@ -58,9 +58,7 @@ def print_todo_line(win, y, x, inputLineStr, checked, done):
     count = 0
     for line in lines:
         if count == 0:
-            if checked:
-                win.addstr(y+count, x, "[ ] " + line)
-            elif done:
+            if done:
                 win.addstr(y+count, x, "[x] " + line)
             else:
                 win.addstr(y+count, x, "[ ] " + line)
