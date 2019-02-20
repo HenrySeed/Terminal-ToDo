@@ -3,9 +3,9 @@ import os
 from cursesUtils import *
 
 
-def print_todo_line(win, y, x, inputLineStr, checked, done):
+def get_line_split(inputLineStr):
     """
-        Prints a given todo item
+        Takes a line and returns it split into an array with each item being a line of the right length
     """
     rows, columns = os.popen('stty size', 'r').read().split()
 
@@ -33,6 +33,27 @@ def print_todo_line(win, y, x, inputLineStr, checked, done):
 
     if currentLine != "":
         lines.append(currentLine)
+
+    return lines
+
+
+def is_todo_multiLine(inputLineStr):
+    """
+        Returns True | False based on if the given string will occupy more than one line on the todo
+    """
+    if len(get_line_split(inputLineStr)) > 1:
+        return True
+    else:
+        return False
+
+
+
+def print_todo_line(win, y, x, inputLineStr, checked, done):
+    """
+        Prints a given todo item
+    """
+
+    lines = get_line_split(inputLineStr)
     
     count = 0
     for line in lines:
@@ -89,17 +110,42 @@ def print_todo(win, listTodo, doneList, cursorLine, linesUsed):
 
 
 
-def updateCursor(win, cursorPos, tbCursor, todoLength, start):
+def updateCursor(win, cursorPos, tbCursor, todoList, doneList, start):
     """
         janky cursor move system. Needs to be updated to use win.move(y, x)
     """
     # if its in the text field
     if cursorPos == -1:
         win.addstr(start+1, 10+tbCursor, "")
-    elif cursorPos > todoLength-1:
-        win.addstr(cursorPos+start+6, 4, "")
     else:
-        win.addstr(cursorPos+start+4, 4, "")
+        found_line = False
+        lineCount = start + 4
+        index = 0
+
+        for item in todoList:
+            if index == cursorPos:
+                win.addstr(lineCount, 4, "")
+                found_line = True
+                break
+            else:
+                lineCount += len(get_line_split(item))
+            index += 1
+
+        # add the break between the lists
+        lineCount += 2
+
+        if not found_line:
+            for item in doneList:
+                if index == cursorPos:
+                    win.addstr(lineCount, 4, "")
+                    found_line = True
+                    break
+                else:
+                    lineCount += len(get_line_split(item))
+                index += 1
+
+
+
 
 
 
@@ -111,5 +157,5 @@ def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, l
     print_new_todo_input(win, newTodo, tbCursor, textField, linesUsed)
     print_todo(win, todoList, doneList, cursorPos, linesUsed)
 
-    updateCursor(win, cursorPos, tbCursor, len(todoList), linesUsed)
+    updateCursor(win, cursorPos, tbCursor, todoList, doneList, linesUsed)
 
