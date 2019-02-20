@@ -185,13 +185,14 @@ def main(win):
         except Exception as e:
             rows, cols = os.popen('stty size', 'r').read().split()
             if rows != lastRows or cols != lastCols:
+                lastRows, lastCols = rows, cols
                 win.clear()
                 print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate)
 
 
             # No input 
             sleep(0.01)  
-            
+
             # if str(e) != 'no input':
             #     win.addstr(35, 0, ' ' * 100)
             #     win.addstr(35, 0, "ERROR: {0}".format(e))
