@@ -3,18 +3,15 @@ import os
 from cursesUtils import *
 
 
-def get_line_split(inputLineStr):
+def get_line_split(inputLineStr, max_width):
     """
         Takes a line and returns it split into an array with each item being a line of the right length
     """
-    rows, columns = os.popen('stty size', 'r').read().split()
-
+    
     # check for a long inputLineStr
-    text = inputLineStr.replace('[ ] ', "").strip()
+    text = inputLineStr.replace('[ ] ', "")
     lines = []
-    # 7 is the length of the left margin and the "[ ] "
-    max_width = int(columns) - 7
-
+    
     currentLine = ""
     for word in text.split(' '):
         if len(currentLine + " " + word) < max_width:
@@ -33,19 +30,37 @@ def get_line_split(inputLineStr):
 
     if currentLine != "":
         lines.append(currentLine)
-
     return lines
+
+
+def get_split_newTodo(todo):
+    """
+        Returns the new todo field, split so the new lines wrap
+    """
+    rows, columns = os.popen('stty size', 'r').read().split()
+    # 10 is the length of the left margin and the " new Todo"
+    max_width = int(columns) - 10
+    return get_line_split(todo, max_width)
+
+
+def get_split_todo(todo):
+    """
+        Returns the given todo, split so the new lines wrap
+    """
+    rows, columns = os.popen('stty size', 'r').read().split()
+    # 7 is the length of the left margin and the "[ ] "
+    max_width = int(columns) - 7
+    return get_line_split(todo, max_width)
 
 
 def is_todo_multiLine(inputLineStr):
     """
         Returns True | False based on if the given string will occupy more than one line on the todo
     """
-    if len(get_line_split(inputLineStr)) > 1:
+    if len(get_split_todo(inputLineStr)) > 1:
         return True
     else:
         return False
-
 
 
 def print_todo_line(win, y, x, inputLineStr, checked, done):
@@ -53,7 +68,7 @@ def print_todo_line(win, y, x, inputLineStr, checked, done):
         Prints a given todo item
     """
 
-    lines = get_line_split(inputLineStr)
+    lines = get_split_todo(inputLineStr)
     
     count = 0
     for line in lines:
@@ -75,10 +90,18 @@ def print_new_todo_input(win, todo, tbCursor, active, linesUsed):
     """
         Prints the new todo input to the curses window with the cursor.
     """
-    todoString = todo
-    win.addstr(linesUsed+1,0, "New TODO: " + todoString)
-    # if active:
-    #     win.addstr(linesUsed+1,10 + tbCursor, "█")
+    str_lines = get_split_newTodo(todo)
+
+    count = 1
+    for line in str_lines:
+        if count == 1:
+            win.addstr(linesUsed+count, 0, "New TODO: " + line)
+        else:
+            win.addstr(linesUsed+count, 0, "          " + line)
+        count += 1
+
+    return linesUsed + count
+ 
 
 
 def print_todo(win, listTodo, doneList, cursorLine, linesUsed):
@@ -86,7 +109,7 @@ def print_todo(win, listTodo, doneList, cursorLine, linesUsed):
         Prints the todoList and the doneList to the curses window
     """
     listX = 3
-    listY = linesUsed+3
+    listY = linesUsed+1
 
     win.addstr(listY, 0, " TODO ------------------")
     # the y screen position of the start of the list
@@ -108,16 +131,23 @@ def print_todo(win, listTodo, doneList, cursorLine, linesUsed):
 
 
 
-def updateCursor(win, cursorPos, tbCursor, todoList, doneList, start):
+def updateCursor(win, cursorPos, tbCursor, newTodo, todoList, doneList, start):
     """
         janky cursor move system. Needs to be updated to use win.move(y, x)
     """
     # if its in the text field
     if cursorPos == -1:
-        win.addstr(start+1, 10+tbCursor, "")
+        # get the string before the cursor so we can find the lines
+        pre_cursor = newTodo[0:tbCursor]
+        # get the newTodo lines
+        str_lines = get_split_newTodo(pre_cursor)
+        # get the y (number of lines), x (len of last line)
+        y, x = len(str_lines), len(str_lines[-1])
+
+        win.addstr(start-1, 10+x-1, "")
     else:
         found_line = False
-        lineCount = start + 4
+        lineCount = start + 2
         index = 0
 
         for item in todoList:
@@ -126,7 +156,7 @@ def updateCursor(win, cursorPos, tbCursor, todoList, doneList, start):
                 found_line = True
                 break
             else:
-                lineCount += len(get_line_split(item))
+                lineCount += len(get_split_todo(item))
             index += 1
 
         # add the break between the lists
@@ -139,7 +169,7 @@ def updateCursor(win, cursorPos, tbCursor, todoList, doneList, start):
                     found_line = True
                     break
                 else:
-                    lineCount += len(get_line_split(item))
+                    lineCount += len(get_split_todo(item))
                 index += 1
 
 
@@ -152,8 +182,8 @@ def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, l
         Prints all three UI elements to the curses window, logo, new todo Input and the todo list
     """
     linesUsed = print_logo(win, 0,0, logo, noDate)
-    print_new_todo_input(win, newTodo, tbCursor, textField, linesUsed)
+    linesUsed = print_new_todo_input(win, newTodo, tbCursor, textField, linesUsed)
     print_todo(win, todoList, doneList, cursorPos, linesUsed)
 
-    updateCursor(win, cursorPos, tbCursor, todoList, doneList, linesUsed)
+    updateCursor(win, cursorPos, tbCursor, newTodo, todoList, doneList, linesUsed)
 
