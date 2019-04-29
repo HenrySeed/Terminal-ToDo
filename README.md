@@ -1,7 +1,7 @@
 # TerminalToDo
 A simple, clean terminal to-do app to keep you working and not worrying about keeping track of your tasks
 
-![Terminal To-do](https://i.imgur.com/85NtbpW.png)
+![Terminal To-do](https://i.imgur.com/rKTZGWQ.png)
 
 ### Install
 First, clone the repo
