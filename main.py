@@ -25,10 +25,11 @@ def catch_args():
     try:
         customLogo = sys.argv[1]
         noDate = sys.argv[2]
+        noHelp = sys.argv[3]
 
-        return [customLogo, noDate]
+        return [customLogo, noDate, noHelp]
     except:
-        return ["", "False"]
+        return ["", "False", "False"]
 
 
 def tb_backSpace(text, index):
@@ -81,7 +82,7 @@ def main(win):
     setupColour(win)
     
     #get args
-    logo, noDate = catch_args()
+    logo, noDate, noHelp = catch_args()
 
     todoList, doneList = loadFromFile()
     cursorPos = 0
@@ -94,7 +95,7 @@ def main(win):
         cursorPos = -1
         textField = True
 
-    print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate)
+    print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate, noHelp)
 
     lastRows, lastCols = os.popen('stty size', 'r').read().split()
 
@@ -118,10 +119,11 @@ def main(win):
                     if tbCursor < len(newTodo): tbCursor += 1
                 # Leave the input field and clear it 
                 elif ord(key) == 27:    # Escape
-                    newTodo = ""
-                    cursorPos += 1
-                    textField = False
-                    tbCursor = 0
+                    # newTodo = ""
+                    # cursorPos += 1
+                    # textField = False
+                    # tbCursor = 0
+                    return
                 # Add the entered todo to the todo array
                 elif key == "\n":       # Enter
                     todoList.append("[ ] " + newTodo)
@@ -158,6 +160,8 @@ def main(win):
                 # Enter toggles the current todo
                 elif key == "\n":
                     todoList, doneList = toggle_todo(cursorPos, todoList, doneList)
+                elif ord(key) == 27:
+                    return;
                 
                 
             # make sure we havent left the array
@@ -176,7 +180,7 @@ def main(win):
             # win.addstr(34, 0, ' ' * 100)
             # win.addstr(34, 0, "Key: " + key + "cursorPos: " + str(cursorPos))
 
-            print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate)
+            print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate, noHelp)
             save_to_file(todoList, doneList)
 
             # win.addstr(34, 0, ' ' * 100)
@@ -187,7 +191,7 @@ def main(win):
             if rows != lastRows or cols != lastCols:
                 lastRows, lastCols = rows, cols
                 win.clear()
-                print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate)
+                print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate, noHelp)
 
 
             # No input 

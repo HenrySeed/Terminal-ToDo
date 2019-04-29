@@ -1,6 +1,7 @@
 from logoUtils import print_logo
 import os
 from cursesUtils import *
+import math
 
 
 def get_line_split(inputLineStr, max_width):
@@ -184,16 +185,29 @@ def updateCursor(win, cursorPos, tbCursor, newTodo, todoList, doneList, start):
 
 
 
+def printHelp(win):
+    height,width = win.getmaxyx()
+    leftMargin = math.floor(width / 2 - 17)
+
+    if width > 35:
+        win.addstr(height-1, leftMargin + 0, "esc/q:      enter:      del:", curses.color_pair(4))
+        win.addstr(height-1, leftMargin + 6, "quit")
+        win.addstr(height-1, leftMargin + 18, "done")
+        win.addstr(height-1, leftMargin + 28, "delete")
+
+    # win.addstr(height-2, 0, "esc: quit  enter: Done  backspace: Delete")
 
 
-
-def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate):
+def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate, noHelp):
     """
         Prints all three UI elements to the curses window, logo, new todo Input and the todo list
     """
     linesUsed = print_logo(win, 0,0, logo, noDate)
     linesUsed = print_new_todo_input(win, newTodo, tbCursor, textField, linesUsed)
     print_todo(win, todoList, doneList, cursorPos, linesUsed)
+
+    if noHelp == "False":
+        printHelp(win)
 
     updateCursor(win, cursorPos, tbCursor, newTodo, todoList, doneList, linesUsed)
 
