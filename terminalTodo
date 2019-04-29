@@ -40,7 +40,8 @@ while (( "$#" )); do
       echo "Arguments:" 
       echo "  --noLogo (-nl) : Hides the Logo" 
       echo "  --noDate (-nd) : Hides the date" 
-      echo "  --customLogo   : A custom logo to be used instead"
+      echo "  --noHelp (-nh) : Hides the help text" 
+      echo "  --customLogo   : A custom logo"
       echo "  --help (-h)    : This help menu"
       
       >&2
@@ -61,7 +62,8 @@ while (( "$#" )); do
       echo "Arguments:" 
       echo "  --noLogo (-nl) : Hides the Logo" 
       echo "  --noDate (-nd) : Hides the date" 
-      echo "  --customLogo   : A custom logo to be used instead"
+      echo "  --noHelp (-nh) : Hides the help text" 
+      echo "  --customLogo   : A custom logo"
       echo "  --help (-h)    : This help menu"
       exit 1
       ;;
