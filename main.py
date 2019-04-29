@@ -111,7 +111,7 @@ def main(win):
     tbCursor = 0
     menuOpen = False
 
-    editedTodoisTodo = False
+    editedTodoisTodo = True
 
     # if we have empty lists, start the curser in the new item field
     if len(todoList + doneList) == 0:
@@ -152,6 +152,13 @@ def main(win):
                     # cursorPos += 1
                     # textField = False
                     # tbCursor = 0
+                    if newTodo.strip() != "":
+                        if editedTodoisTodo:
+                            todoList.append("[ ] " + newTodo)
+                        else:
+                            doneList.append("[ ] " + newTodo)
+                        save_to_file(todoList, doneList)
+
                     return
                 # Add the entered todo to the todo array
                 elif key == "\n":       # Enter
@@ -159,6 +166,7 @@ def main(win):
                         todoList.append("[ ] " + newTodo)
                     else:
                         doneList.append("[ ] " + newTodo)
+                    editedTodoisTodo = True
                     newTodo = ""
                     cursorPos += 1
                     textField = False
@@ -222,8 +230,8 @@ def main(win):
             height, width = win.getmaxyx()
 
 
-            win.addstr(height - 3, 0, ' ' * 100)
-            win.addstr(height - 3, 0, "Key: " + key + " cursorPos: " + str(cursorPos))
+            # win.addstr(height - 3, 0, ' ' * 100)
+            # win.addstr(height - 3, 0, "Key: " + key + " cursorPos: " + str(cursorPos))
 
             print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate, noHelp, menuOpen)
             save_to_file(todoList, doneList)
@@ -241,9 +249,9 @@ def main(win):
             # No input 
             sleep(0.01)  
 
-            if str(e) != 'no input':
-                win.addstr(height - 2, 0, ' ' * 100)
-                win.addstr(height - 2, 0, "ERROR: {0}".format(e))
+            # if str(e) != 'no input':
+            #     win.addstr(height - 2, 0, ' ' * 100)
+            #     win.addstr(height - 2, 0, "ERROR: {0}".format(e))
             pass  
 
         
