@@ -114,7 +114,6 @@ def print_new_todo_input(win, todo, tbCursor, active, linesUsed):
     return linesUsed + count
  
 
-
 def print_todo(win, listTodo, doneList, cursorLine, linesUsed):
     """
         Prints the todoList and the doneList to the curses window
@@ -140,8 +139,6 @@ def print_todo(win, listTodo, doneList, cursorLine, linesUsed):
         itemCount += 1
 
 
-
-
 def updateCursor(win, cursorPos, tbCursor, newTodo, todoList, doneList, start):
     """
         janky cursor move system. Needs to be updated to use win.move(y, x)
@@ -154,8 +151,8 @@ def updateCursor(win, cursorPos, tbCursor, newTodo, todoList, doneList, start):
         str_lines = get_split_newTodo(pre_cursor)
         # get the y (number of lines), x (len of last line)
         y, x = len(str_lines), len(str_lines[-1])
-
         win.addstr(start-1, 10+x-1, "")
+
     else:
         found_line = False
         lineCount = start + 2
@@ -184,21 +181,41 @@ def updateCursor(win, cursorPos, tbCursor, newTodo, todoList, doneList, start):
                 index += 1
 
 
-
 def printHelp(win):
-    height,width = win.getmaxyx()
-    leftMargin = math.floor(width / 2 - 17)
+    """
+        Prints the help menu at the bottom of the screen
+    """
+    height, width = win.getmaxyx()
+    leftMargin = math.floor(width / 2 - 21)
 
-    if width > 35:
-        win.addstr(height-1, leftMargin + 0, "esc/q:      enter:      del:", curses.color_pair(4))
+    if width > 41:
+        win.addstr(height-1, leftMargin + 0, "esc/q:      enter:      del:        e:", curses.color_pair(4))
         win.addstr(height-1, leftMargin + 6, "quit")
         win.addstr(height-1, leftMargin + 18, "done")
         win.addstr(height-1, leftMargin + 28, "delete")
-
+        win.addstr(height-1, leftMargin + 38, "edit")
     # win.addstr(height-2, 0, "esc: quit  enter: Done  backspace: Delete")
 
 
-def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate, noHelp):
+def printMenu(win):
+    """
+        Prints the menu for toDo
+    """
+    height, width = win.getmaxyx()
+    left_margin = math.floor(width / 2 - 16)
+    line_num = 5
+
+    win.addstr(line_num, left_margin, "+------------------------------+")
+    for i in range(1, 19):
+        win.addstr(line_num + i, left_margin, "|                              |")
+
+    win.addstr(line_num + i + 1, left_margin, "+------------------------------+")
+
+    win.addstr(7, left_margin + 8, "----  MENU  ----")
+
+
+
+def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, logo, noDate, noHelp, menuOpen):
     """
         Prints all three UI elements to the curses window, logo, new todo Input and the todo list
     """
@@ -208,6 +225,9 @@ def print_UI(win, todoList, doneList, cursorPos, tbCursor, textField, newTodo, l
 
     if noHelp == "False":
         printHelp(win)
+
+    # if menuOpen:
+    #     printMenu(win)
 
     updateCursor(win, cursorPos, tbCursor, newTodo, todoList, doneList, linesUsed)
 
