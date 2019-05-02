@@ -39,7 +39,10 @@ def print_logo(win, x, y, CustomLogo, nodate):
       if dateNum in rdEndings: ending = "rd"  
 
       # generate the date string eg: Thursday - 14th Feb 2019
-      date = datetime.datetime.now().strftime('%A - %d{0} %b %G'.format(ending))
+      dayNum = datetime.datetime.now().strftime('%d')
+      if dayNum[0] == "0":
+        dayNum = dayNum[1:]
+      date = datetime.datetime.now().strftime('%A - {0}{1} %b %G'.format(dayNum, ending))
 
       # print to the curses window
       win.addstr(y+logo_lines+1, x, date)
