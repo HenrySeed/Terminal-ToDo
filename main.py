@@ -172,7 +172,7 @@ def main(win):
                     textField = False
                     tbCursor = 0
                 # Backspace
-                elif keyNum == 127:   
+                elif keyNum == 127 or key == "KEY_BACKSPACE":   
                     if tbCursor > 0: 
                         newTodo = tb_backSpace(newTodo, tbCursor)
                         tbCursor -= 1
