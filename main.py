@@ -172,7 +172,7 @@ def main(win):
                     textField = False
                     tbCursor = 0
                 # Backspace
-                elif keyNum == 127:   
+                elif keyNum == 127 or key == "KEY_BACKSPACE":   
                     if tbCursor > 0: 
                         newTodo = tb_backSpace(newTodo, tbCursor)
                         tbCursor -= 1
@@ -199,7 +199,7 @@ def main(win):
                     cursorPos = -1
                     tbCursor = len(newTodo)
                 # Backspace removes the current todo
-                elif keyNum == 127:
+                elif keyNum == 127 or key == "KEY_BACKSPACE":
                     todoList, doneList = remove_todo(cursorPos, todoList, doneList)
                     cursorPos -= 1
                     if cursorPos < 0 and len(doneList + todoList) > 0: cursorPos = 0
