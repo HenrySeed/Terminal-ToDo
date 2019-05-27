@@ -1,4 +1,6 @@
 import os
+import json
+
 
 def save_to_file(todoList, doneList):
     """ 
@@ -10,14 +12,9 @@ def save_to_file(todoList, doneList):
     # wipe the old save file
     f.truncate(0)
 
-    todoString = ",".join(todoList)
-    if todoString == ",": todoString = ""
 
-    doneString = ",".join(doneList)
-    if doneString == ",": doneString = ""
-
-    output = todoString + ";" + doneString
-    f.write(output)
+    obj = {"todo": todoList, "done": doneList}
+    f.write(json.dumps(obj, indent=4))
 
 
 def loadFromFile():
@@ -28,9 +25,9 @@ def loadFromFile():
     # if we cant get a file, return empty arrays
     try:
         filePath = os.path.expanduser('~/todoSave')
-        line = open(filePath, 'r').read()
-        todoList = line.split(';')[0].split(',')
-        doneList = line.split(';')[1].split(',')
+        fileContents = open(filePath, 'r').read()
+        todoList = json.loads(fileContents)["todo"]
+        doneList = json.loads(fileContents)["done"]
 
         todoListFiltered = []
         doneListFiltered = []
