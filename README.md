@@ -1,4 +1,4 @@
-# TerminalToDo
+# Terminal ToDo
 A simple, clean terminal to-do app to keep you working and not worrying about keeping track of your tasks
 
 ![Terminal To-do](https://i.imgur.com/108BrUy.png)
